@@ -9,3 +9,6 @@ SOURCES += \
 
 HEADERS += \
     funciones.h
+
+DISTFILES += \
+            texto.txt

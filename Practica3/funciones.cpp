@@ -1,3 +1,4 @@
+#include <fstream>
 #include "funciones.h"
 
 
@@ -296,4 +297,63 @@ void desencriptar(unsigned char* datos,
 
         datos[i] = rotarDerecha(datos[i], rotacion);
     }
+}
+char* leerArchivo(const char* nombre, int* longitud)
+{
+    std::ifstream archivo(nombre);
+
+    if (!archivo)
+    {
+        throw "No se pudo abrir el archivo.";
+    }
+
+    int cantidad = 0;
+    char caracter;
+
+    while (archivo.get(caracter))
+    {
+        cantidad++;
+    }
+
+    if (cantidad == 0)
+    {
+        throw "El archivo esta vacio.";
+    }
+
+    archivo.clear();
+    archivo.seekg(0);
+
+    char* texto = new char[cantidad + 1];
+
+    int posicion = 0;
+
+    while (archivo.get(texto[posicion]))
+    {
+        posicion++;
+    }
+
+    texto[posicion] = '\0';
+    *longitud = posicion;
+
+    archivo.close();
+
+    return texto;
+}
+
+
+void escribirArchivo(const char* nombre, const char* texto, int longitud)
+{
+    std::ofstream archivo(nombre);
+
+    if (!archivo)
+    {
+        throw "No se pudo crear el archivo de resultado.";
+    }
+
+    for (int i = 0; i < longitud; i++)
+    {
+        archivo << texto[i];
+    }
+
+    archivo.close();
 }

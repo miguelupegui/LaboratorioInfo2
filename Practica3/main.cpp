@@ -196,6 +196,181 @@ void pro3()
 }
 
 
+void pro4()
+{
+    char nombreArchivo[100];
+    int metodo;
+    int rotacion;
+    int claveNumero;
+
+    cout << endl;
+    cout << "Nombre del archivo de texto: ";
+    cin >> nombreArchivo;
+
+    cout << "Seleccione el metodo de compresion:" << endl;
+    cout << "1. RLE" << endl;
+    cout << "2. LZ78" << endl;
+    cout << "Opcion: ";
+    cin >> metodo;
+
+    try
+    {
+        if (metodo != 1 && metodo != 2)
+        {
+            throw 1;
+        }
+
+        cout << "Ingrese la cantidad de rotaciones (1 a 7): ";
+        cin >> rotacion;
+
+        if (cin.fail() || rotacion <= 0 || rotacion >= 8)
+        {
+            cin.clear();
+            cin.ignore(1000, '\n');
+            throw 'r';
+        }
+
+        cout << "Ingrese la clave (0 a 255): ";
+        cin >> claveNumero;
+
+        if (cin.fail() || claveNumero < 0 || claveNumero > 255)
+        {
+            cin.clear();
+            cin.ignore(1000, '\n');
+            throw 2.0;
+        }
+
+        int longitud = 0;
+        char* original = leerArchivo(nombreArchivo, &longitud);
+        unsigned char clave = (unsigned char)claveNumero;
+
+        cout << endl;
+        cout << "Texto leido del archivo correctamente." << endl;
+
+        if (metodo == 1)
+        {
+            string textoOriginal = "";
+
+            for (int i = 0; i < longitud; i++)
+            {
+                textoOriginal = textoOriginal + original[i];
+            }
+
+            string comprimido = comprimirRLE(textoOriginal);
+            int cantidad = (int)comprimido.length();
+
+            unsigned char* datos = new unsigned char[cantidad];
+
+            for (int i = 0; i < cantidad; i++)
+            {
+                datos[i] = (unsigned char)comprimido[i];
+            }
+
+            encriptar(datos, cantidad, rotacion, clave);
+            cout << "Texto comprimido con RLE y encriptado." << endl;
+
+            desencriptar(datos, cantidad, rotacion, clave);
+
+            string comprimidoFinal = "";
+
+            for (int i = 0; i < cantidad; i++)
+            {
+                comprimidoFinal = comprimidoFinal + (char)datos[i];
+            }
+
+            string finalTexto = descomprimirRLE(comprimidoFinal);
+
+            escribirArchivo("resultado.txt", finalTexto.c_str(),
+                            (int)finalTexto.length());
+
+            cout << "Texto final guardado en resultado.txt" << endl;
+            cout << "Texto original: " << textoOriginal << endl;
+            cout << "Texto final: " << finalTexto << endl;
+
+            if (textoOriginal == finalTexto)
+            {
+                cout << "VERIFICACION: El texto original y el procesado son iguales." << endl;
+            }
+            else
+            {
+                cout << "VERIFICACION: Los textos son diferentes." << endl;
+            }
+
+            delete[] datos;
+        }
+        else
+        {
+            int cantidadPares = 0;
+            ParLZ78* pares = comprimirLZ78(original, longitud, &cantidadPares);
+
+            int cantidadBytes = cantidadPares * (int)sizeof(ParLZ78);
+
+            encriptar((unsigned char*)pares, cantidadBytes, rotacion, clave);
+            cout << "Texto comprimido con LZ78 y encriptado." << endl;
+
+            desencriptar((unsigned char*)pares, cantidadBytes, rotacion, clave);
+
+            int longitudFinal = 0;
+            char* finalTexto = descomprimirLZ78(pares, cantidadPares,
+                                                longitud, &longitudFinal);
+
+            escribirArchivo("resultado.txt", finalTexto, longitudFinal);
+
+            cout << "Texto final guardado en resultado.txt" << endl;
+            cout << "Texto original: " << original << endl;
+            cout << "Texto final: " << finalTexto << endl;
+
+            bool iguales = true;
+
+            if (longitud != longitudFinal)
+            {
+                iguales = false;
+            }
+            else
+            {
+                for (int i = 0; i < longitud; i++)
+                {
+                    if (original[i] != finalTexto[i])
+                    {
+                        iguales = false;
+                    }
+                }
+            }
+
+            if (iguales)
+            {
+                cout << "VERIFICACION: El texto original y el procesado son iguales." << endl;
+            }
+            else
+            {
+                cout << "VERIFICACION: Los textos son diferentes." << endl;
+            }
+
+            delete[] pares;
+            delete[] finalTexto;
+        }
+
+        delete[] original;
+    }
+    catch (int error)
+    {
+        cout << "Error: metodo de compresion invalido." << endl;
+    }
+    catch (char error)
+    {
+        cout << "Error: la rotacion debe estar entre 1 y 7." << endl;
+    }
+    catch (double error)
+    {
+        cout << "Error: la clave debe estar entre 0 y 255." << endl;
+    }
+    catch (const char* error)
+    {
+        cout << "Error: " << error << endl;
+    }
+}
+
+
 int main()
 {
     int x = 1;
@@ -208,6 +383,7 @@ int main()
         cout << "1. Compresion y descompresion RLE" << endl;
         cout << "2. Compresion y descompresion LZ78" << endl;
         cout << "3. Encriptacion y desencriptacion" << endl;
+        cout << "4. Integracion de modulos" << endl;
         cout << "0. Salir" << endl;
 
         cout << endl;
@@ -234,6 +410,10 @@ int main()
 
         case 3:
             pro3();
+            break;
+
+        case 4:
+            pro4();
             break;
 
         case 0:

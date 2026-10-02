@@ -1,0 +1,4 @@
+build/
+.qtcreator/
+resultado.txt
+*.pro.user

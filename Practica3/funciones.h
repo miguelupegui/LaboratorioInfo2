@@ -29,4 +29,7 @@ unsigned char rotarDerecha(unsigned char byte, int cantidad);
 void encriptar(unsigned char* datos, int cantidad, int rotacion, unsigned char clave);
 void desencriptar(unsigned char* datos, int cantidad, int rotacion, unsigned char clave);
 
+char* leerArchivo(const char* nombre, int* longitud);
+void escribirArchivo(const char* nombre, const char* texto, int longitud);
+
 #endif

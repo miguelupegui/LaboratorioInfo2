@@ -116,6 +116,34 @@ void pro5(Red* red)
 }
 
 
+void pro6(Red* red)
+{
+    cout << endl;
+    cout << "Tabla de costos (- = sin enlace directo):" << endl;
+    red->imprimirTablas();
+}
+
+
+void pro7(Red* red)
+{
+    red->agregarEnrutador("A");
+    red->agregarEnrutador("B");
+    red->agregarEnrutador("C");
+    red->agregarEnrutador("D");
+
+    red->agregarEnlace("A", "B", 4);
+    red->agregarEnlace("A", "C", 10);
+    red->agregarEnlace("A", "D", 5);
+    red->agregarEnlace("B", "C", 3);
+    red->agregarEnlace("B", "D", 1);
+    red->agregarEnlace("C", "D", 2);
+
+    cout << endl;
+    cout << "Red de la Figura 1 cargada." << endl;
+    red->imprimirTopologia();
+}
+
+
 int main()
 {
     Red red;
@@ -131,6 +159,8 @@ int main()
         cout << "3. Agregar o modificar enlace" << endl;
         cout << "4. Eliminar enlace" << endl;
         cout << "5. Mostrar enrutadores y vecinos" << endl;
+        cout << "6. Mostrar tabla de costos" << endl;
+        cout << "7. Cargar red de ejemplo (Figura 1)" << endl;
         cout << "0. Salir" << endl;
 
         cout << endl;
@@ -165,6 +195,14 @@ int main()
 
         case 5:
             pro5(&red);
+            break;
+
+        case 6:
+            pro6(&red);
+            break;
+
+        case 7:
+            pro7(&red);
             break;
 
         case 0:

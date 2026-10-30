@@ -4,12 +4,15 @@
 #include <string>
 #include <map>
 #include "enrutador.h"
+#include "camino.h"
 
 
 class Red
 {
 private:
     std::map<std::string, Enrutador> enrutadores;
+
+    void calcularCaminosDesde(std::string origen);
 
 public:
     Red();
@@ -24,9 +27,13 @@ public:
     bool eliminarEnlace(std::string origen, std::string destino);
 
     void actualizarTablas();
+    void calcularCaminos();
+
+    Camino buscarCamino(std::string origen, std::string destino);
 
     void imprimirTopologia();
     void imprimirTablas();
+    void imprimirTablaEnrutador(std::string nombre);
 };
 
 #endif

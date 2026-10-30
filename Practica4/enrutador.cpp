@@ -65,6 +65,9 @@ void Enrutador::limpiarTabla()
 {
     tablaCostos.clear();
     tablaCostos[nombre] = 0;
+
+    caminos.clear();
+    caminos[nombre].push_back(nombre);
 }
 
 
@@ -88,6 +91,24 @@ int Enrutador::getCosto(std::string destino)
 std::map<std::string, int> Enrutador::getTablaCostos()
 {
     return tablaCostos;
+}
+
+
+void Enrutador::guardarCamino(std::string destino, std::list<std::string> camino)
+{
+    caminos[destino] = camino;
+}
+
+
+std::list<std::string> Enrutador::getCamino(std::string destino)
+{
+    if (caminos.count(destino) == 0)
+    {
+        std::list<std::string> vacio;
+        return vacio;
+    }
+
+    return caminos[destino];
 }
 
 
@@ -123,11 +144,23 @@ void Enrutador::imprimirTabla()
 
         if (it->second == -1)
         {
-            std::cout << "-";
+            std::cout << "sin ruta" << std::endl;
+            continue;
         }
-        else
+
+        std::cout << it->second << "   camino: ";
+
+        std::list<std::string> camino = getCamino(it->first);
+        std::list<std::string>::iterator nodo;
+
+        for (nodo = camino.begin(); nodo != camino.end(); nodo++)
         {
-            std::cout << it->second;
+            if (nodo != camino.begin())
+            {
+                std::cout << " -> ";
+            }
+
+            std::cout << *nodo;
         }
 
         std::cout << std::endl;

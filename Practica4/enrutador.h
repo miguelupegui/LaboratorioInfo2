@@ -3,6 +3,7 @@
 
 #include <string>
 #include <map>
+#include <list>
 
 
 class Enrutador
@@ -11,6 +12,7 @@ private:
     std::string nombre;
     std::map<std::string, int> vecinos;
     std::map<std::string, int> tablaCostos;
+    std::map<std::string, std::list<std::string>> caminos;
 
 public:
     Enrutador();
@@ -28,6 +30,9 @@ public:
     void actualizarCosto(std::string destino, int costo);
     int getCosto(std::string destino);
     std::map<std::string, int> getTablaCostos();
+
+    void guardarCamino(std::string destino, std::list<std::string> camino);
+    std::list<std::string> getCamino(std::string destino);
 
     void imprimirVecinos();
     void imprimirTabla();

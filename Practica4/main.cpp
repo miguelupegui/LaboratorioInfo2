@@ -119,7 +119,7 @@ void pro5(Red* red)
 void pro6(Red* red)
 {
     cout << endl;
-    cout << "Tabla de costos (- = sin enlace directo):" << endl;
+    cout << "Tabla de costos minimos (- = sin ruta):" << endl;
     red->imprimirTablas();
 }
 
@@ -144,6 +144,40 @@ void pro7(Red* red)
 }
 
 
+void pro8(Red* red)
+{
+    string origen;
+    string destino;
+
+    cout << endl;
+    cout << "Ingrese el enrutador de origen: ";
+    cin >> origen;
+    cout << "Ingrese el enrutador de destino: ";
+    cin >> destino;
+
+    if (!red->existeEnrutador(origen) || !red->existeEnrutador(destino))
+    {
+        cout << "Uno de los enrutadores no existe." << endl;
+        return;
+    }
+
+    Camino camino = red->buscarCamino(origen, destino);
+    camino.imprimir();
+}
+
+
+void pro9(Red* red)
+{
+    string nombre;
+
+    cout << endl;
+    cout << "Ingrese el nombre del enrutador: ";
+    cin >> nombre;
+
+    red->imprimirTablaEnrutador(nombre);
+}
+
+
 int main()
 {
     Red red;
@@ -161,6 +195,8 @@ int main()
         cout << "5. Mostrar enrutadores y vecinos" << endl;
         cout << "6. Mostrar tabla de costos" << endl;
         cout << "7. Cargar red de ejemplo (Figura 1)" << endl;
+        cout << "8. Buscar camino entre dos enrutadores" << endl;
+        cout << "9. Ver tabla y caminos de un enrutador" << endl;
         cout << "0. Salir" << endl;
 
         cout << endl;
@@ -203,6 +239,14 @@ int main()
 
         case 7:
             pro7(&red);
+            break;
+
+        case 8:
+            pro8(&red);
+            break;
+
+        case 9:
+            pro9(&red);
             break;
 
         case 0:

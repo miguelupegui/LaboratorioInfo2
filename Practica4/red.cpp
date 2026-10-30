@@ -115,15 +115,132 @@ void Red::actualizarTablas()
                 it->second.actualizarCosto(otro->first, -1);
             }
         }
+    }
 
-        std::map<std::string, int> vecinos = it->second.getVecinos();
-        std::map<std::string, int>::iterator vecino;
+    calcularCaminos();
+}
 
-        for (vecino = vecinos.begin(); vecino != vecinos.end(); vecino++)
+
+void Red::calcularCaminos()
+{
+    std::map<std::string, Enrutador>::iterator it;
+
+    for (it = enrutadores.begin(); it != enrutadores.end(); it++)
+    {
+        calcularCaminosDesde(it->first);
+    }
+}
+
+
+void Red::calcularCaminosDesde(std::string origen)
+{
+    std::map<std::string, int> distancia;
+    std::map<std::string, std::string> anterior;
+    std::map<std::string, bool> visitado;
+
+    std::map<std::string, Enrutador>::iterator it;
+
+    for (it = enrutadores.begin(); it != enrutadores.end(); it++)
+    {
+        distancia[it->first] = -1;
+        anterior[it->first] = "";
+        visitado[it->first] = false;
+    }
+
+    distancia[origen] = 0;
+
+    for (int i = 0; i < cantidadEnrutadores(); i++)
+    {
+        std::string actual = "";
+        int menor = -1;
+
+        std::map<std::string, int>::iterator d;
+
+        for (d = distancia.begin(); d != distancia.end(); d++)
         {
-            it->second.actualizarCosto(vecino->first, vecino->second);
+            if (!visitado[d->first] && d->second != -1)
+            {
+                if (menor == -1 || d->second < menor)
+                {
+                    menor = d->second;
+                    actual = d->first;
+                }
+            }
+        }
+
+        if (actual == "")
+        {
+            break;
+        }
+
+        visitado[actual] = true;
+
+        std::map<std::string, int> vecinos = enrutadores[actual].getVecinos();
+        std::map<std::string, int>::iterator v;
+
+        for (v = vecinos.begin(); v != vecinos.end(); v++)
+        {
+            int nuevoCosto = menor + v->second;
+
+            if (distancia[v->first] == -1 || nuevoCosto < distancia[v->first])
+            {
+                distancia[v->first] = nuevoCosto;
+                anterior[v->first] = actual;
+            }
         }
     }
+
+    std::map<std::string, int>::iterator d;
+
+    for (d = distancia.begin(); d != distancia.end(); d++)
+    {
+        if (d->second == -1 || d->first == origen)
+        {
+            continue;
+        }
+
+        std::list<std::string> camino;
+        std::string paso = d->first;
+
+        while (paso != "")
+        {
+            camino.push_front(paso);
+            paso = anterior[paso];
+        }
+
+        enrutadores[origen].actualizarCosto(d->first, d->second);
+        enrutadores[origen].guardarCamino(d->first, camino);
+    }
+}
+
+
+Camino Red::buscarCamino(std::string origen, std::string destino)
+{
+    Camino camino;
+
+    if (!existeEnrutador(origen) || !existeEnrutador(destino))
+    {
+        return camino;
+    }
+
+    int costo = enrutadores[origen].getCosto(destino);
+
+    if (costo == -1)
+    {
+        return camino;
+    }
+
+    std::list<std::string> nodos = enrutadores[origen].getCamino(destino);
+    std::list<std::string>::iterator it;
+
+    for (it = nodos.begin(); it != nodos.end(); it++)
+    {
+        camino.agregarNodo(*it);
+    }
+
+    camino.setCosto(costo);
+
+    return camino;
 }
 
 
@@ -186,4 +303,16 @@ void Red::imprimirTablas()
 
         std::cout << std::endl;
     }
+}
+
+
+void Red::imprimirTablaEnrutador(std::string nombre)
+{
+    if (!existeEnrutador(nombre))
+    {
+        std::cout << "Ese enrutador no existe." << std::endl;
+        return;
+    }
+
+    enrutadores[nombre].imprimirTabla();
 }

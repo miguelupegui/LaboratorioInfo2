@@ -178,6 +178,26 @@ void pro9(Red* red)
 }
 
 
+void pro10(Red* red)
+{
+    string ruta;
+
+    cout << endl;
+    cout << "Ingrese el nombre del archivo (ej: red.txt): ";
+    cin >> ruta;
+
+    if (red->cargarDesdeArchivo(ruta))
+    {
+        cout << "Red cargada desde " << ruta << endl;
+        red->imprimirTopologia();
+    }
+    else
+    {
+        cout << "No se pudo abrir el archivo " << ruta << endl;
+    }
+}
+
+
 int main()
 {
     Red red;
@@ -197,6 +217,7 @@ int main()
         cout << "7. Cargar red de ejemplo (Figura 1)" << endl;
         cout << "8. Buscar camino entre dos enrutadores" << endl;
         cout << "9. Ver tabla y caminos de un enrutador" << endl;
+        cout << "10. Cargar red desde archivo" << endl;
         cout << "0. Salir" << endl;
 
         cout << endl;
@@ -247,6 +268,10 @@ int main()
 
         case 9:
             pro9(&red);
+            break;
+
+        case 10:
+            pro10(&red);
             break;
 
         case 0:

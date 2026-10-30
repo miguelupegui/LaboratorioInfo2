@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include "red.h"
 
 
@@ -211,6 +212,47 @@ void Red::calcularCaminosDesde(std::string origen)
         enrutadores[origen].actualizarCosto(d->first, d->second);
         enrutadores[origen].guardarCamino(d->first, camino);
     }
+}
+
+
+bool Red::cargarDesdeArchivo(std::string ruta)
+{
+    std::ifstream archivo(ruta);
+
+    if (!archivo)
+    {
+        return false;
+    }
+
+    enrutadores.clear();
+
+    std::string origen;
+    std::string destino;
+    int costo;
+
+    while (archivo >> origen >> destino >> costo)
+    {
+        if (!existeEnrutador(origen))
+        {
+            enrutadores[origen] = Enrutador(origen);
+        }
+
+        if (!existeEnrutador(destino))
+        {
+            enrutadores[destino] = Enrutador(destino);
+        }
+
+        if (origen != destino && costo > 0)
+        {
+            enrutadores[origen].agregarVecino(destino, costo);
+            enrutadores[destino].agregarVecino(origen, costo);
+        }
+    }
+
+    archivo.close();
+    actualizarTablas();
+
+    return true;
 }
 
 

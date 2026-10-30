@@ -13,3 +13,6 @@ HEADERS += \
     camino.h \
     enrutador.h \
     red.h
+DISTFILES += \
+            red.txt \
+            red_grande.txt

@@ -29,6 +29,7 @@ public:
     void actualizarTablas();
     void calcularCaminos();
 
+    bool cargarDesdeArchivo(std::string ruta);
     Camino buscarCamino(std::string origen, std::string destino);
 
     void imprimirTopologia();
